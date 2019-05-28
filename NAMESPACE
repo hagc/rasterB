@@ -1,3 +1,4 @@
 exportPattern("^[[:alpha:]]+")
 
 import(raster)
+importFrom(foreach, "%dopar%")
