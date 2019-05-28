@@ -50,6 +50,8 @@
 #' rnc
 #' rncB
 writeRasterB<-function(x, filename, ...){
+  tictoc::tic()
+
   if(class(x)=="RasterLayer"){
     out <- raster(x)
   }else{
@@ -64,4 +66,6 @@ writeRasterB<-function(x, filename, ...){
     out <- writeValues(out, v, bs$row[i])
   }
   out <- writeStop(out)
+  tictoc::toc()
+  return(out)
 }
