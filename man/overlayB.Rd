@@ -4,7 +4,7 @@
 \alias{overlayB}
 \title{Overlay Raster objects in blocks}
 \usage{
-overlayB(x, ..., fun, cores, filename = "")
+overlayB(x, ..., fun, cores, filename = "", verbose = TRUE)
 }
 \arguments{
 \item{x}{Raster* object}
@@ -16,6 +16,8 @@ overlayB(x, ..., fun, cores, filename = "")
 \item{cores}{Integer. Number of cores to process blocks in parallel}
 
 \item{filename}{Character. Output filename (optional) }
+
+\item{verbose}{logical. Enable verbose execution?}
 }
 \value{
 RasterLayer object
@@ -37,20 +39,23 @@ r <- raster(ncol=10, nrow=10)
 r1 <- init(r, fun=runif)
 r2 <- init(r, fun=runif)
 r3 <- overlay(r1, r2, fun=function(x,y){return(x+y)})
-r3B <- overlayB(stack(r1, r2), fun=function(x,y){return(x+y)})
-compareRaster(r3,r3B,values=TRUE, stopiffalse=FALSE)           # not exactly equal for some reason
-cellStats(r3-r3B,max)                                          # minor difference
+r3B <- overlayB(stack(r1, r2), fun=function(x,y){return(x+y)}, verbose=FALSE)
+compareRaster(r3,r3B,values=TRUE, stopiffalse=FALSE)
+cellStats(abs(r3-r3B),max) # minor difference
 
 # long version for multiplication
 r4 <- overlay(r1, r2, fun=function(x,y){(x*y)} )
-r4B <- overlayB(stack(r1, r2), cores=2, fun=function(x,y){(x*y)})
-compareRaster(r4,r4B,values=TRUE, stopiffalse=FALSE)           # not exactly equal for some reason
-cellStats(r4-r4B,max)                                          # minor difference
+r4B <- overlayB(stack(r1, r2), fun=function(x,y){(x*y)}, verbose=FALSE)
+compareRaster(r4,r4B,values=TRUE, stopiffalse=FALSE)
+cellStats(abs(r4-r4B),max) # minor difference
 
-#use the individual layers of a RasterStack to get a RasterLayer
+# use the individual layers of a RasterStack to get a RasterLayer
 s <- stack(r1, r2)
 r5 <- overlay(s, fun=function(x,y) x*y)
-r5B <- overlayB(s, cores=2, fun=function(x,y) x*y)
-compareRaster(r5,r5B,values=TRUE, stopiffalse=FALSE)           # not exactly equal for some reason
-cellStats(r5-r5B,max)                                          # minor difference
+r5B <- overlayB(s, fun=function(x,y) x*y, verbose=FALSE)
+compareRaster(r5,r5B,values=TRUE, stopiffalse=FALSE)
+cellStats(r5-r5B,max) # minor difference
+
+overlayB(s, fun=function(x,y) x*y)
+overlayB(s, fun=function(x,y) x*y, cores=2)
 }
