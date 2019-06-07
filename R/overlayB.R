@@ -43,14 +43,14 @@
 #'
 #' overlayB(s, fun=function(x,y) x*y)
 #' overlayB(s, fun=function(x,y) x*y, cores=2)
-overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
+overlayB<-function(x, ..., fun, cores=1, filename="", verbose=TRUE){
 
   out <- raster(x)
   out <- writeStart(out, filename, ...)  # open wrinting session for the output raster
   bs  <- blockSize(out, n=nlayers(x))    # define blocks for writing
   n<-parallel::detectCores()
 
-  if(missing(cores) | cores=1){
+  if(missing(cores) | cores==1){
     if(verbose) message(n," cores available; using 1; use argument 'cores' for parallel processing.")
     for (i in 1:bs$n) {
 
