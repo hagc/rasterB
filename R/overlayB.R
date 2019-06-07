@@ -50,10 +50,9 @@ overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
   bs  <- blockSize(out, n=nlayers(x))    # define blocks for writing
   n<-parallel::detectCores()
 
-  if(missing(cores)){
-    if(verbose) message(n," cores available; using 1; define argument 'cores' for parallel processing.")
+  if(missing(cores) | cores=1){
+    if(verbose) message(n," cores available; using 1; use argument 'cores' for parallel processing.")
     for (i in 1:bs$n) {
-      if(verbose) message(sprintf('progress: %f; block: %d', i/bs$n, i))
 
       extb<-extent(out)
       extb[4]<-yFromRow(out,bs$row[i])+yres(out)/2                 # ymax
@@ -62,6 +61,7 @@ overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
       tilex<-crop(x,extb)
       v <- overlay(tilex, fun=fun)
       writeValues(out, values(v), bs$row[i])
+      if(verbose) message(sprintf('progress: %f; block: %d', i/bs$n, i))
     }
   }else{
 
@@ -73,9 +73,7 @@ overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
 
     ## print out progress of foreach
     if(verbose){
-      progress <- function(nfin, tag) {
-        message(sprintf('progress: %f; block: %d', nfin/bs$n, tag))
-      }
+      progress <- function(nfin, tag) message(sprintf('progress: %f; block: %d', nfin/bs$n, tag))
       opts <- list(progress=progress)
     }else{
       opts<-NULL
