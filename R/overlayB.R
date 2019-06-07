@@ -50,7 +50,7 @@ overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
   bs  <- blockSize(out, n=nlayers(x))    # define blocks for writing
   n<-parallel::detectCores()
 
-  if(missing(cores) | cores=1){
+  if(missing(cores) | cores==1){
     if(verbose) message(n," cores available; using 1; use argument 'cores' for parallel processing.")
     for (i in 1:bs$n) {
 
