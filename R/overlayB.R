@@ -43,7 +43,7 @@
 #'
 #' overlayB(s, fun=function(x,y) x*y)
 #' overlayB(s, fun=function(x,y) x*y, cores=2)
-overlayB<-function(x, ..., fun, cores, filename="", verbose=TRUE){
+overlayB<-function(x, ..., fun, cores=1, filename="", verbose=TRUE){
 
   out <- raster(x)
   out <- writeStart(out, filename, ...)  # open wrinting session for the output raster

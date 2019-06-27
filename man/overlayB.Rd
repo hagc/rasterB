@@ -4,7 +4,7 @@
 \alias{overlayB}
 \title{Overlay Raster objects in blocks}
 \usage{
-overlayB(x, ..., fun, cores, filename = "", verbose = TRUE)
+overlayB(x, ..., fun, cores = 1, filename = "", verbose = TRUE)
 }
 \arguments{
 \item{x}{Raster* object}
