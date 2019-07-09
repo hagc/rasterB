@@ -15,7 +15,7 @@
 #' Error in setValues(out, .Call("_raster_aggregate_fun", x, dims, as.integer(na.rm),  :
 #'   std::bad_alloc
 #'
-#' @param x why inheritParams doesn't work?
+#' @param x why inheritParams doesn't work??
 #' @inheritParams raster::aggregate
 #'
 #' @return RasterLayer or RasterBrick

@@ -7,7 +7,7 @@
 aggregateB(x, fact = 2, fun = mean, filename = "", ...)
 }
 \arguments{
-\item{x}{why inheritParams doesn't work?}
+\item{x}{why inheritParams doesn't work??}
 
 \item{fact}{integer. Aggregation factor expressed as number of cells in each direction (horizontally and vertically). Or two integers (horizontal and vertical aggregation factor) or three integers (when also aggregating over layers). See Details}
 
@@ -47,4 +47,3 @@ ra2<- aggregateB(r, fact=10, fun=max)
 cellStats(ra-ra2, function(x,...){max(abs(x))}) # maximum difference between the rasters
 
 }
-\keyword{internal}
