@@ -15,12 +15,6 @@
 #' Error in setValues(out, .Call("_raster_aggregate_fun", x, dims, as.integer(na.rm),  :
 #'   std::bad_alloc
 #'
-<<<<<<< HEAD
-=======
-#'
-#' @keywords internal
-#'
->>>>>>> e907fda1a79f8755e5861288b96101b376582711
 #' @param x why inheritParams doesn't work?
 #' @inheritParams raster::aggregate
 #'
