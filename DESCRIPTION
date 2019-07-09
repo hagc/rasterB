@@ -1,7 +1,7 @@
 Package: rasterB
 Type: Package
 Title: raster package in blocks
-Version: 0.2.2
+Version: 0.3.0
 Depends: R (>= 3.0.0), raster (>= 2.8-19)
 Imports: doSNOW, foreach, parallel
 Suggests: rgdal (>= 0.9-1), ncdf4

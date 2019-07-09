@@ -45,7 +45,7 @@
 #' # write to netcdf
 #' if (require(ncdf4)) {
 #'   rnc <- writeRaster(r, filename='netCDF.nc', format="CDF", overwrite=TRUE)
-#'   rncB <- writeRasterB(r, filename='netCDF.nc', format="CDF", overwrite=TRUE)
+#'   rncB <- writeRasterB(r, filename='netCDFB.nc', format="CDF", overwrite=TRUE)
 #' }
 #' rnc
 #' rncB
