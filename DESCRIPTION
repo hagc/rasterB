@@ -7,7 +7,7 @@ Imports: doSNOW, foreach, parallel
 Suggests: rgdal (>= 0.9-1), ncdf4
 Author: Hugo Costa [cre, aut] <hugoagcosta@gmail.com>
 Maintainer: Hugo Costa <hugoagcosta@gmail.com>
-Description: Implements functions of package raster in blocks for an alternative when RAM memory is low.
+Description: Functions of package raster run in blocks and to be used when RAM is low.
 License: GPL (>= 3)
 Encoding: UTF-8
 LazyData: true
