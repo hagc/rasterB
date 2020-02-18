@@ -4,7 +4,8 @@
 \alias{overlayB}
 \title{Overlay Raster objects in blocks}
 \usage{
-overlayB(x, ..., fun, cores = 1, filename = "", verbose = TRUE)
+overlayB(x, ..., fun, args = NULL, filename = "", export = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{x}{Raster* object}
@@ -13,11 +14,15 @@ overlayB(x, ..., fun, cores = 1, filename = "", verbose = TRUE)
 
 \item{fun}{Function to be applied. The function should match the number of layers of the RasterStack/Brick object.}
 
-\item{cores}{Integer. Number of cores to process blocks in parallel}
+\item{args}{list with the arguments for the function (excluding x, which should always be the first argument}
 
 \item{filename}{Character. Output filename (optional) }
 
+\item{export}{character. Vector of variable names to export to the cluster nodes such that the are visible to fun (e.g. a parameter that is not passed as an argument)}
+
 \item{verbose}{logical. Enable verbose execution?}
+
+\item{cores}{Integer. Number of cores to process blocks in parallel}
 }
 \value{
 RasterLayer object
@@ -35,6 +40,7 @@ the former only accepts one multi-layer Raster* object and outputs
 a RasterLayer.
 }
 \examples{
+\dontrun{
 r <- raster(ncol=10, nrow=10)
 r1 <- init(r, fun=runif)
 r2 <- init(r, fun=runif)
@@ -58,4 +64,5 @@ cellStats(r5-r5B,max) # minor difference
 
 overlayB(s, fun=function(x,y) x*y)
 overlayB(s, fun=function(x,y) x*y, cores=2)
+}
 }

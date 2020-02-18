@@ -13,6 +13,8 @@
 #' @param cores Integer. Number of cores to process blocks in parallel
 #' @param ... Additional arguments for writing files as in \code{\link{writeRasterB}}
 #' @param fun Function to be applied. The function should match the number of layers of the RasterStack/Brick object.
+#' @param args list with the arguments for the function (excluding x, which should always be the first argument
+#' @param export character. Vector of variable names to export such that the are visible to fun (e.g. a parameter that is not passed as an argument)
 #' @param verbose logical. Enable verbose execution?
 #' @inheritParams raster::overlay
 #'
@@ -20,6 +22,7 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' r <- raster(ncol=10, nrow=10)
 #' r1 <- init(r, fun=runif)
 #' r2 <- init(r, fun=runif)
@@ -43,53 +46,38 @@
 #'
 #' overlayB(s, fun=function(x,y) x*y)
 #' overlayB(s, fun=function(x,y) x*y, cores=2)
-overlayB<-function(x, ..., fun, cores=1, filename="", verbose=TRUE){
+#' }
+overlayB<-function(x, ..., fun, args=NULL, filename="", export=NULL, verbose=TRUE){
+
+  if (!is.null(export)) { #argument export needed?
+    export_names<-lapply(export, function(x){deparse(substitute(x))})
+    export_names<-names(export_names)
+    list2env(export, environment())
+  }
 
   out <- raster(x)
   out <- writeStart(out, filename, ...)  # open wrinting session for the output raster
   bs  <- blockSize(out, n=nlayers(x))    # define blocks for writing
-  n<-parallel::detectCores()
 
-  if(missing(cores) | cores==1){
-    if(verbose) message(n," cores available; using 1; use argument 'cores' for parallel processing.")
-    for (i in 1:bs$n) {
 
-      extb<-extent(out)
-      extb[4]<-yFromRow(out,bs$row[i])+yres(out)/2                 # ymax
-      extb[3]<-yFromRow(out,(bs$row[i]+bs$nrows[i])-1)-yres(out)/2 # ymin
+  for (i in 1:bs$n) {
 
-      tilex<-crop(x,extb)
+    extb<-extent(out)
+    extb[4]<-yFromRow(out,bs$row[i])+yres(out)/2                 # ymax
+    extb[3]<-yFromRow(out,(bs$row[i]+bs$nrows[i])-1)-yres(out)/2 # ymin
+
+    tilex<-crop(x,extb)
+    if (is.null(args)) {
+      # write.csv(ls(), "D:/lixo/ls_overlayBc.csv")
+      # write.csv(omission, "D:/lixo/omission_overlayBc.csv")
       v <- overlay(tilex, fun=fun)
-      writeValues(out, values(v), bs$row[i])
-      if(verbose) message(sprintf('progress: %f; block: %d', i/bs$n, i))
-    }
-  }else{
-
-    ## Register CoreCluster
-    if(cores>n){stop(sprintf("Argument 'cores' should be <=%i as only %i cores are available in the local machine.", n, n))}
-    if(verbose) message(n," cores available; using ", cores)
-    cl<- parallel::makeCluster(cores)
-    doSNOW::registerDoSNOW(cl)
-
-    ## print out progress of foreach
-    if(verbose){
-      progress <- function(nfin, tag) message(sprintf('progress: %f; block: %d', nfin/bs$n, tag))
-      opts <- list(progress=progress)
     }else{
-      opts<-NULL
+      v <- do.call(fun, c(tilex, args))
     }
 
-    ## overlay (parallel)
-    agg<-foreach::foreach(i=1:bs$n,.packages="raster",.options.snow=opts) %dopar% {
-      extb<-extent(out)
-      extb[4]<-yFromRow(out,bs$row[i])+yres(out)/2                 # ymax
-      extb[3]<-yFromRow(out,(bs$row[i]+bs$nrows[i])-1)-yres(out)/2 # ymin
 
-      tilex<-crop(x,extb)
-      overlay(tilex, fun=fun)
-    }
-    parallel::stopCluster(cl)
-    for (i in 1:bs$n) writeValues(out, values(agg[[i]]), bs$row[i])
+    writeValues(out, values(v), bs$row[i])
+    if(verbose) message(sprintf('progress: %f; block: %d', i/bs$n, i))
   }
   out <- writeStop(out)
 }
